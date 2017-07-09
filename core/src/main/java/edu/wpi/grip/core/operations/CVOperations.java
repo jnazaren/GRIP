@@ -377,6 +377,20 @@ public class CVOperations {
                   opencv_imgproc.threshold(src, dst, thresh.doubleValue(), maxval.doubleValue(),
                       type.value);
                 }
+            )),
+
+        new OperationMetaData(CVOperation.defaults("CV PnP Ransac",
+            "Analyze the 3D offset of a set of points."),
+            templateFactory.create(
+                SocketHints.Inputs.createMatSocketHint("src", false),
+                SocketHints.Inputs.createNumberSpinnerSocketHint("thresh", 0),
+                SocketHints.Inputs.createNumberSpinnerSocketHint("maxval", 0),
+                SocketHints.createEnumSocketHint("type", CVThresholdTypesEnum.THRESH_BINARY),
+                SocketHints.Outputs.createMatSocketHint("dst"),
+                (src, thresh, maxval, type, dst) -> {
+                    opencv_imgproc.threshold(src, dst, thresh.doubleValue(), maxval.doubleValue(),
+                        type.value);
+                }
             ))
     );
   }
