@@ -1,6 +1,5 @@
 package edu.wpi.grip.core.operations;
 
-
 import edu.wpi.grip.core.OperationMetaData;
 import edu.wpi.grip.core.events.OperationAddedEvent;
 import edu.wpi.grip.core.operations.opencv.CVOperation;
@@ -388,8 +387,8 @@ public class CVOperations {
                 SocketHints.createEnumSocketHint("type", CVThresholdTypesEnum.THRESH_BINARY),
                 SocketHints.Outputs.createMatSocketHint("dst"),
                 (src, thresh, maxval, type, dst) -> {
-                    opencv_imgproc.threshold(src, dst, thresh.doubleValue(), maxval.doubleValue(),
-                        type.value);
+                  opencv_imgproc.threshold(src, dst, thresh.doubleValue(), maxval.doubleValue(),
+                      type.value);
                 }
             ))
     );
