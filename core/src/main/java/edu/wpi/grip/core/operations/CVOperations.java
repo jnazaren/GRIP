@@ -394,7 +394,7 @@ public class CVOperations {
                   src.copyTo(corners);
                   opencv_imgproc.goodFeaturesToTrack(greyscale, cornerData, maxCorners.intValue(),
                       threshold.doubleValue(), minDistance.intValue());
-                  if (!(cornerData == null)) {
+                  if (cornerData != null) {
                     FloatBufferIndexer b = cornerData.createIndexer(true);
                     for (int i = 0; i < maxCorners.intValue(); i++) {
                       opencv_imgproc.circle(corners,
