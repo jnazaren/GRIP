@@ -23,11 +23,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
 
+import org.bytedeco.javacpp.indexer.FloatBufferIndexer;
 import org.bytedeco.javacpp.opencv_core;
 import org.bytedeco.javacpp.opencv_core.Point;
 import org.bytedeco.javacpp.opencv_core.Scalar;
 import org.bytedeco.javacpp.opencv_core.Size;
 import org.bytedeco.javacpp.opencv_imgproc;
+
 
 /**
  * A list of all of the raw opencv operations.
@@ -375,6 +377,32 @@ public class CVOperations {
                 (src, thresh, maxval, type, dst) -> {
                   opencv_imgproc.threshold(src, dst, thresh.doubleValue(), maxval.doubleValue(),
                       type.value);
+                }
+            )),
+
+        new OperationMetaData(CVOperation.defaults("CV Corners",
+            "Find all corners above a certain threshold in a greyscale image."),
+            templateFactory.create(
+                SocketHints.Inputs.createMatSocketHint("src", false),
+                SocketHints.Inputs.createMatSocketHint("greyscale", false),
+                SocketHints.Inputs.createNumberSliderSocketHint("threshold", 0.5, 0, 1),
+                SocketHints.Inputs.createNumberSpinnerSocketHint("maxCorners", 4),
+                SocketHints.Inputs.createNumberSpinnerSocketHint("minDistance", 10),
+                SocketHints.Outputs.createMatSocketHint("cornerData"),
+                SocketHints.Outputs.createMatSocketHint("corners"),
+                (src, greyscale, threshold, maxCorners, minDistance, cornerData, corners) -> {
+                  src.copyTo(corners);
+                  opencv_imgproc.goodFeaturesToTrack(greyscale, cornerData, maxCorners.intValue(),
+                      threshold.doubleValue(), minDistance.intValue());
+                  if (!(cornerData == null)) {
+                    FloatBufferIndexer b = cornerData.createIndexer(true);
+                    for (int i = 0; i < maxCorners.intValue(); i++) {
+                      opencv_imgproc.circle(corners,
+                          new Point((int) b.get(i, 0), (int) b.get(i, 1)),
+                          corners.rows() / 150, new Scalar(0, 0, 255, 0),
+                          corners.rows() / 300, 8, 0);
+                    }
+                  }
                 }
             )),
 
